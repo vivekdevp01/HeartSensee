@@ -12,7 +12,8 @@ const options = {
     },
     servers: [
       {
-        url: "https://heartsensee-production.up.railway.app",
+        url: "https://heartsensee-production.up.railway.app/api/v1",
+        description: "Production server",
       },
     ],
     components: {
