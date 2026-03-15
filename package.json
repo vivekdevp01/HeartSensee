@@ -1,0 +1,36 @@
+{
+  "name": "heart-sense-project-template",
+  "version": "1.0.0",
+  "description": "A Node.js project template with Sequelize, JWT, and role-based access control",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx nodemon src/index.js"
+  },
+  "author": "Vivek Pundir",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "amqplib": "^0.10.9",
+    "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "chartjs-node-canvas": "^5.0.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.2",
+    "mysql2": "^3.2.4",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.6",
+    "nodemon": "^2.0.22",
+    "pdfkit": "^0.17.2",
+    "pdfkit-table": "^0.1.99",
+    "pdfmake": "^0.2.20",
+    "sequelize": "^6.31.1",
+    "sequelize-cli": "^6.6.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.8.2"
+  }
+}
