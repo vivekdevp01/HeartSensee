@@ -12,8 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3091/api/v1",
-        description: "Local server",
+        url: "https://heartsensee-production.up.railway.app",
       },
     ],
     components: {
