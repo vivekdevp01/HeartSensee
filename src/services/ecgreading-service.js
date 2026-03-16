@@ -16,9 +16,12 @@ const ecgReportRepository = new EcgReportRepository();
 // This is just a placeholder. Replace with real ML call or library
 async function predictAbnormality(dataPoints) {
   try {
-    const response = await axios.post("http://127.0.0.1:5000/predict", {
-      ecg_signal: dataPoints,
-    });
+    const response = await axios.post(
+      "https://python-ml-production-37e3.up.railway.app/predict",
+      {
+        ecg_signal: dataPoints,
+      },
+    );
 
     const results = response.data.results;
 
@@ -30,7 +33,7 @@ async function predictAbnormality(dataPoints) {
     });
 
     const finalClass = Object.keys(classCounts).reduce((a, b) =>
-      classCounts[a] > classCounts[b] ? a : b
+      classCounts[a] > classCounts[b] ? a : b,
     );
 
     return {
@@ -171,7 +174,7 @@ async function getReadingsByDateRange(patientId, startDate, endDate) {
     const readings = await ecgReadingRepository.getByDateRange(
       patientId,
       start,
-      end
+      end,
     );
     return readings;
   } catch (error) {
@@ -206,7 +209,7 @@ async function getReadingsForDoctor(doctorId, limit = 100) {
     for (const patient of patients) {
       const readings = await ecgReadingRepository.getByPatient(
         patient.id,
-        limit
+        limit,
       );
       readingByPatient[patient.id] = {
         patient,

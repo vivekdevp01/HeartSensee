@@ -20,7 +20,7 @@ async function startServer() {
     await connectMongoDB();
     server.listen(ServerConfig.PORT, () => {
       console.log(
-        `Successfully started the server on PORT : ${ServerConfig.PORT}`
+        `Successfully started the server on PORT : ${ServerConfig.PORT}`,
       );
     });
   } catch (error) {
@@ -35,9 +35,12 @@ let ecgSignal = Array.from({ length: 1000 }, () => Math.random() * 0.5);
 
 async function getPrediction() {
   try {
-    const response = await axios.post("http://127.0.0.1:5000/predict", {
-      ecg_signal: ecgSignal,
-    });
+    const response = await axios.post(
+      "https://python-ml-production-37e3.up.railway.app/predict",
+      {
+        ecg_signal: ecgSignal,
+      },
+    );
 
     console.log("✅ Prediction Result:");
     console.log("Number of Beats:", response.data.num_beats);
