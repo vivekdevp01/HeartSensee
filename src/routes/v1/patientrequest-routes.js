@@ -35,7 +35,7 @@ router.post(
   "/",
   AuthMiddleware.isLoggedIn,
   AuthMiddleware.requirePatient,
-  PatientRequestController.createRequest
+  PatientRequestController.createRequest,
 );
 /**
  * @swagger
@@ -55,7 +55,7 @@ router.get(
   "/all",
   AuthMiddleware.isLoggedIn,
   AuthMiddleware.requireDoctor,
-  PatientRequestController.getRequestsForDoctor
+  PatientRequestController.getRequestsForDoctor,
 );
 /**
  * @swagger
@@ -84,7 +84,7 @@ router.get(
   "/:id",
   AuthMiddleware.isLoggedIn,
   AuthMiddleware.requireDoctor,
-  PatientRequestController.getRequestById
+  PatientRequestController.getRequestById,
 );
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.put(
   "/:id/status",
   AuthMiddleware.isLoggedIn,
   AuthMiddleware.requireDoctor,
-  PatientRequestController.updateRequestStatus
+  PatientRequestController.updateRequestStatus,
 );
 /**
  * @swagger
@@ -144,7 +144,7 @@ router.put(
 router.get(
   "/all/doctors",
   AuthMiddleware.isLoggedIn,
-  AuthMiddleware.requirePatient,
-  PatientRequestController.getAllDoctors
+  // AuthMiddleware.requirePatient,
+  PatientRequestController.getAllDoctors,
 );
 module.exports = router;
