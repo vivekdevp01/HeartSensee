@@ -133,6 +133,8 @@ router.put(
  *   get:
  *     summary: Get all available doctors (for patients to choose from)
  *     tags: [Patient Requests]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of doctors
