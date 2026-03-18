@@ -5,11 +5,11 @@ const { EcgReport } = require("../models"); // adjust path as needed
 const ServerConfig = require("../config/server-config");
 // const ecgreport = require("../models/ecgreport");
 
-const RABBITMQ_URL = ServerConfig.RABBITMQ_URL || "amqp://localhost";
+const RABBITMQ_URL = ServerConfig.RABBITMQ_URL;
 const AI_QUEUE = "ai_ecg_analysis";
 
 async function startWorker() {
- const conn = await amqp.connect(RABBITMQ_URL + "?heartbeat=30");
+  const conn = await amqp.connect(RABBITMQ_URL + "?heartbeat=30");
   const ch = await conn.createChannel();
   await ch.assertQueue(AI_QUEUE, { durable: true });
   ch.prefetch(1);
@@ -34,7 +34,7 @@ async function startWorker() {
             aiStatus: "done",
             aiGeneratedAt: new Date(),
           },
-          { where: { id: job.reportId } }
+          { where: { id: job.reportId } },
         );
 
         console.log(`✅ AI advice stored for report ID ${job.reportId}`);
@@ -43,12 +43,12 @@ async function startWorker() {
         console.error("❌ AI job failed:", error);
         await EcgReport.update(
           { aiStatus: "failed", aiError: error.message },
-          { where: { id: job.reportId } }
+          { where: { id: job.reportId } },
         );
         ch.nack(msg, false, false);
       }
     },
-    { noAck: false }
+    { noAck: false },
   );
 }
 
