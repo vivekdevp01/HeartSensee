@@ -212,7 +212,7 @@ const fonts = {
     italics: path.join(__dirname, "../fonts/Roboto/static/Roboto-Italic.ttf"),
     bolditalics: path.join(
       __dirname,
-      "../fonts/Roboto/static/Roboto-MediumItalic.ttf"
+      "../fonts/Roboto/static/Roboto-MediumItalic.ttf",
     ),
   },
 };
@@ -364,7 +364,14 @@ async function generateEcgReportPdf(patient, reports) {
       }
 
       // ✅ Chart
-      const chartImage = await generateProbabilityChart(reports);
+      // const chartImage = await generateProbabilityChart(reports);
+      let chartImage = null;
+
+      try {
+        chartImage = await generateProbabilityChart(reports);
+      } catch (err) {
+        console.log("Chart failed:", err.message);
+      }
 
       // ✅ AI Advice Formatting
       const formattedAiAdvice = aiAdvice
@@ -426,7 +433,10 @@ async function generateEcgReportPdf(patient, reports) {
 
           "\n\n",
           { text: "Probability Chart", style: "subheader" },
-          { image: chartImage, width: 500, alignment: "center" },
+          // { image: chartImage, width: 500, alignment: "center" },
+          ...(chartImage
+            ? [{ image: chartImage, width: 500, alignment: "center" }]
+            : []),
 
           "\n\n",
           {
