@@ -9,21 +9,6 @@
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all"
   },
-  "nixpacks": {
-    "phases": {
-      "setup": {
-        "aptPkgs": [
-          "libcairo2",
-          "libcairo2-dev",
-          "libpango1.0-dev",
-          "libjpeg-dev",
-          "libgif-dev",
-          "librsvg2-dev",
-          "fontconfig"
-        ]
-      }
-    }
-  },
   "author": "Vivek Pundir",
   "license": "ISC",
   "dependencies": {
