@@ -1,17 +1,19 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+// const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { ServerConfig } = require("../config");
-
-const GenAI = new GoogleGenerativeAI(
-  process.env.GOOGLE_API_KEY || ServerConfig.GOOGLE_API_KEY
-);
-
+const Groq = require("groq-sdk");
+// const GenAI = new GoogleGenerativeAI(
+//   process.env.GOOGLE_API_KEY || ServerConfig.GOOGLE_API_KEY
+// );
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+console.log("API KEY:", process.env.GROQ_API_KEY);
 /**
  * Generate lifestyle & health advice based on ECG reports.
  * Handles both single and daily (multiple) reports.
  */
 async function getLifestyleAdvice(report) {
   try {
-    const model = GenAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     let prompt = "";
 
     // Detect daily vs single
@@ -30,7 +32,7 @@ async function getLifestyleAdvice(report) {
               arr.filter((v) => v === a).length >=
               arr.filter((v) => v === b).length
                 ? a
-                : b
+                : b,
             )
           : "Not available";
 
@@ -102,8 +104,31 @@ Use plain text, numbered or bulleted structure, no markdown symbols.
 `;
     }
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text().trim();
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "system",
+          content: `
+You are a professional cardiology wellness assistant.
+
+Rules:
+- Do NOT give medical diagnosis
+- Provide safe, general health guidance
+- Keep response clear, structured, and human-readable
+- Use simple language suitable for patients
+- Always include a recommendation to consult a doctor if abnormalities exist
+      `,
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+    });
+
+    const text = response.choices[0].message.content.trim();
     return text;
   } catch (error) {
     console.error("Error generating lifestyle advice:", error);
