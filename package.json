@@ -3,6 +3,20 @@
   "version": "1.0.0",
   "description": "A Node.js project template with Sequelize, JWT, and role-based access control",
   "main": "index.js",
+  "nixpacks": {
+    "phases": {
+      "setup": {
+        "aptPkgs": [
+          "libcairo2-dev",
+          "libpango1.0-dev",
+          "libjpeg-dev",
+          "libgif-dev",
+          "librsvg2-dev",
+          "fontconfig"
+        ]
+      }
+    }
+  },
   "scripts": {
     "start": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && node src/index.js",
     "dev": "nodemon src/index.js",
