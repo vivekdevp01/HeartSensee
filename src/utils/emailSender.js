@@ -6,30 +6,34 @@ async function sendEmailWithAttachment(
   patient,
   fromDate,
   toDate,
-  pdfBuffer
+  pdfBuffer,
 ) {
   if (!toEmail) throw new Error("Recipient email is missing.");
 
   console.log("Preparing to send email to:", toEmail);
 
   const transporter = nodemailer.createTransport({
-    service: "gmail", // lowercase
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS, // App Password
+      user: serverConfig.GMAIL_USER,
+      pass: serverConfig.GMAIL_PASS,
     },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
   });
 
   // Verify transporter
-  try {
-    await transporter.verify();
-    console.log("Gmail transporter verified successfully!");
-  } catch (err) {
-    console.error("Transporter verification failed:", err);
-    throw new Error(
-      "Email transporter authentication failed. Check Gmail credentials."
-    );
-  }
+  // try {
+  //   await transporter.verify();
+  //   console.log("Gmail transporter verified successfully!");
+  // } catch (err) {
+  //   console.error("Transporter verification failed:", err);
+  //   throw new Error(
+  //     "Email transporter authentication failed. Check Gmail credentials."
+  //   );
+  // }
 
   // HTML email content
   const htmlContent = `
@@ -61,7 +65,7 @@ async function sendEmailWithAttachment(
               <td style="padding: 8px;">${r.status}</td>
               <td style="padding: 8px;">${r.comments || "N/A"}</td>
             </tr>
-          `
+          `,
             )
             .join("")}
         </tbody>
