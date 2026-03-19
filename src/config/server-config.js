@@ -17,4 +17,5 @@ module.exports = {
   MONGODB_URL: process.env.MONGODB_URL,
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   RABBITMQ_URL: process.env.RABBITMQ_URL,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
 };
