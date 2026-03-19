@@ -265,7 +265,61 @@ const printer = new PdfPrinter(fonts);
 
 //   return await chartJSNodeCanvas.renderToDataURL(config);
 // }
+// const axios = require("axios");
+// async function generateProbabilityChart(reports) {
+
+//   try {
+//     const labels = [];
+//     const datasetValues = {};
+
+//     reports.forEach((report, rIdx) => {
+//       if (report.probabilities) {
+//         report.probabilities.forEach((p) => {
+//           labels.push(`R${rIdx + 1}-B${p.beat_index}`);
+//           p.probabilities.forEach((val, classIdx) => {
+//             if (!datasetValues[classIdx]) datasetValues[classIdx] = [];
+//             datasetValues[classIdx].push(val);
+//           });
+//         });
+//       }
+//     });
+
+//     const datasets = Object.keys(datasetValues).map((classIdx) => ({
+//       label: `Class ${classIdx}`,
+//       data: datasetValues[classIdx],
+//       fill: false,
+//       borderColor: `hsl(${classIdx * 60}, 70%, 50%)`,
+//     }));
+
+//     const chartConfig = {
+//       type: "line",
+//       data: {
+//         labels,
+//         datasets,
+//       },
+//     };
+
+//     const response = await axios.post(
+//       "https://quickchart.io/chart",
+//       {
+//         chart: chartConfig,
+//         width: 800,
+//         height: 400,
+//       },
+//       {
+//         responseType: "arraybuffer",
+//       },
+//     );
+
+//     const base64 = Buffer.from(response.data, "binary").toString("base64");
+//     return `data:image/png;base64,${base64}`;
+//   } catch (err) {
+//     console.log("QuickChart error:", err.message);
+//     return null;
+//   }
+// }
 const axios = require("axios");
+
 async function generateProbabilityChart(reports) {
   try {
     const labels = [];
@@ -283,7 +337,7 @@ async function generateProbabilityChart(reports) {
       }
     });
 
-    const datasets = Object.keys(datasetValues).map((classIdx) => ({
+    let datasets = Object.keys(datasetValues).map((classIdx) => ({
       label: `Class ${classIdx}`,
       data: datasetValues[classIdx],
       fill: false,
@@ -305,19 +359,16 @@ async function generateProbabilityChart(reports) {
         width: 800,
         height: 400,
       },
-      {
-        responseType: "arraybuffer",
-      },
+      { responseType: "arraybuffer" },
     );
 
-    const base64 = Buffer.from(response.data, "binary").toString("base64");
+    const base64 = Buffer.from(response.data).toString("base64");
     return `data:image/png;base64,${base64}`;
   } catch (err) {
-    console.log("QuickChart error:", err.message);
+    console.log("Chart failed:", err.message);
     return null;
   }
 }
-
 // ✅ Enhanced PDF generator
 async function generateEcgReportPdf(patient, reports) {
   return new Promise(async (resolve, reject) => {
@@ -416,8 +467,8 @@ async function generateEcgReportPdf(patient, reports) {
       }
 
       // ✅ Chart
-      const chartImage = await generateProbabilityChart(reports);
-      // let chartImage = null;
+      // let chartImage = await generateProbabilityChart(reports);
+      let chartImage = null;
 
       try {
         chartImage = await generateProbabilityChart(reports);
