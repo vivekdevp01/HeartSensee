@@ -220,50 +220,102 @@ const fonts = {
 const printer = new PdfPrinter(fonts);
 
 // ✅ Chart generator
+// async function generateProbabilityChart(reports) {
+//   const width = 800;
+//   const height = 400;
+//   const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
+
+//   const labels = [];
+//   const datasetValues = {};
+
+//   reports.forEach((report, rIdx) => {
+//     if (report.probabilities) {
+//       report.probabilities.forEach((p) => {
+//         labels.push(`R${rIdx + 1}-B${p.beat_index}`);
+//         p.probabilities.forEach((val, classIdx) => {
+//           if (!datasetValues[classIdx]) datasetValues[classIdx] = [];
+//           datasetValues[classIdx].push(val);
+//         });
+//       });
+//     }
+//   });
+
+//   const datasets = Object.keys(datasetValues).map((classIdx) => ({
+//     label: `Class ${classIdx}`,
+//     data: datasetValues[classIdx],
+//     borderColor: `hsl(${classIdx * 60}, 70%, 50%)`,
+//     fill: false,
+//     tension: 0.3,
+//   }));
+
+//   const config = {
+//     type: "line",
+//     data: { labels, datasets },
+//     options: {
+//       responsive: true,
+//       plugins: {
+//         legend: { position: "top" },
+//         title: { display: true, text: "ECG Class Probabilities" },
+//       },
+//       scales: {
+//         y: { min: 0, max: 1, ticks: { stepSize: 0.2 } },
+//       },
+//     },
+//   };
+
+//   return await chartJSNodeCanvas.renderToDataURL(config);
+// }
+const axios = require("axios");
 async function generateProbabilityChart(reports) {
-  const width = 800;
-  const height = 400;
-  const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
+  try {
+    const labels = [];
+    const datasetValues = {};
 
-  const labels = [];
-  const datasetValues = {};
-
-  reports.forEach((report, rIdx) => {
-    if (report.probabilities) {
-      report.probabilities.forEach((p) => {
-        labels.push(`R${rIdx + 1}-B${p.beat_index}`);
-        p.probabilities.forEach((val, classIdx) => {
-          if (!datasetValues[classIdx]) datasetValues[classIdx] = [];
-          datasetValues[classIdx].push(val);
+    reports.forEach((report, rIdx) => {
+      if (report.probabilities) {
+        report.probabilities.forEach((p) => {
+          labels.push(`R${rIdx + 1}-B${p.beat_index}`);
+          p.probabilities.forEach((val, classIdx) => {
+            if (!datasetValues[classIdx]) datasetValues[classIdx] = [];
+            datasetValues[classIdx].push(val);
+          });
         });
-      });
-    }
-  });
+      }
+    });
 
-  const datasets = Object.keys(datasetValues).map((classIdx) => ({
-    label: `Class ${classIdx}`,
-    data: datasetValues[classIdx],
-    borderColor: `hsl(${classIdx * 60}, 70%, 50%)`,
-    fill: false,
-    tension: 0.3,
-  }));
+    const datasets = Object.keys(datasetValues).map((classIdx) => ({
+      label: `Class ${classIdx}`,
+      data: datasetValues[classIdx],
+      fill: false,
+      borderColor: `hsl(${classIdx * 60}, 70%, 50%)`,
+    }));
 
-  const config = {
-    type: "line",
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
-        title: { display: true, text: "ECG Class Probabilities" },
+    const chartConfig = {
+      type: "line",
+      data: {
+        labels,
+        datasets,
       },
-      scales: {
-        y: { min: 0, max: 1, ticks: { stepSize: 0.2 } },
-      },
-    },
-  };
+    };
 
-  return await chartJSNodeCanvas.renderToDataURL(config);
+    const response = await axios.post(
+      "https://quickchart.io/chart",
+      {
+        chart: chartConfig,
+        width: 800,
+        height: 400,
+      },
+      {
+        responseType: "arraybuffer",
+      },
+    );
+
+    const base64 = Buffer.from(response.data, "binary").toString("base64");
+    return `data:image/png;base64,${base64}`;
+  } catch (err) {
+    console.log("QuickChart error:", err.message);
+    return null;
+  }
 }
 
 // ✅ Enhanced PDF generator
@@ -364,8 +416,8 @@ async function generateEcgReportPdf(patient, reports) {
       }
 
       // ✅ Chart
-      // const chartImage = await generateProbabilityChart(reports);
-      let chartImage = null;
+      const chartImage = await generateProbabilityChart(reports);
+      // let chartImage = null;
 
       try {
         chartImage = await generateProbabilityChart(reports);
