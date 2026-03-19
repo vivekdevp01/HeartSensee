@@ -13,15 +13,11 @@ async function sendEmailWithAttachment(
   console.log("Preparing to send email to:", toEmail);
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    service: "gmail", // lowercase
     auth: {
       user: serverConfig.GMAIL_USER,
-      pass: serverConfig.GMAIL_PASS,
+      pass: serverConfig.GMAIL_PASS, // App Password
     },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
   });
 
   // Verify transporter
