@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-
+const serverConfig = require("../config/server-config");
 async function sendEmailWithAttachment(
   toEmail,
   subject,
